@@ -23,7 +23,7 @@ class Conv(nn.Module):
         super(Conv, self).__init__()
         self.conv = nn.Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=False)
         self.bn = nn.BatchNorm2d(c2)
-        self.act = nn.Hardswish() if act else nn.Identity()
+        self.act = HardSwish() if act else nn.Identity()
 
     def forward(self, x):
         return self.act(self.bn(self.conv(x)))
@@ -31,6 +31,11 @@ class Conv(nn.Module):
     def fuseforward(self, x):
         return self.act(self.conv(x))
 
+class HardSwish(nn.Module):  # alternative to nn.Hardswish() for export
+    @staticmethod
+    def forward(x):
+        return x * nn.functional.hardsigmoid(x)
+        # return x * F.hardtanh(x + 3, 0., 6.) / 6.
 
 class Bottleneck(nn.Module):
     # Standard bottleneck
