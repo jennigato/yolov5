@@ -45,9 +45,24 @@ class Detect(nn.Module):
                 if self.grid[i].shape[2:4] != x[i].shape[2:4]:
                     self.grid[i] = self._make_grid(nx, ny).to(x[i].device)
 
+                print("layer: ", i)
+                print("raw data 0,0,0: ", x[i][0][0][0][0])
+                print("raw data 0,0,1: ", x[i][0][0][0][1])
+                print("raw data 0,0,2: ", x[i][0][0][0][2])
+                print("raw data 0,0,3: ", x[i][0][0][0][3])
+                print("raw data 0,0,4: ", x[i][0][0][0][4])
+                print("raw data 0,0,5: ", x[i][0][0][0][5])
+
                 y = x[i].sigmoid()
                 y[..., 0:2] = (y[..., 0:2] * 2. - 0.5 + self.grid[i].to(x[i].device)) * self.stride[i]  # xy
                 y[..., 2:4] = (y[..., 2:4] * 2) ** 2 * self.anchor_grid[i]  # wh
+
+                print("decoded 0,0,0: ", y[0][0][0][0])
+                print("decoded 0,0,1: ", y[0][0][0][1])
+                print("decoded 0,0,2: ", y[0][0][0][2])
+                print("decoded 0,0,3: ", y[0][0][0][3])
+                print("decoded 0,0,4: ", y[0][0][0][4])
+                print("decoded 0,0,5: ", y[0][0][0][5])
                 z.append(y.view(bs, -1, self.no))
 
         return x if self.training else (torch.cat(z, 1), x)

@@ -93,8 +93,12 @@ def detect(save_img=False):
             s += '%gx%g ' % img.shape[2:]  # print string
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             if det is not None and len(det):
-                # Rescale boxes from img_size to im0 size
+             # Rescale boxes from img_size to im0 size
+                print("before scale: ", det[:, :4])
+                print("img1_shape: ", img.shape[2:])
+                print("img0_shape: ", im0.shape)
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
+                print("after rescale: ", det[:, :4])
 
                 # Print results
                 for c in det[:, -1].unique():
